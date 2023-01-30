@@ -48,10 +48,11 @@ public class TextSwap {
     private static char[] runSwapper(String content, int chunkSize, int numChunks) {
         List<Character> labels = getLabels(numChunks);
         Interval[] intervals = getIntervals(numChunks, chunkSize);
-        for (Interval interval : intervals) {
-            System.out.println(interval);
-        }
         // TODO: Order the intervals properly, then run the Swapper instances.
+        List<Interval> orderedIntervals = new ArrayList<Interval>();
+        for (Character label : labels) {
+            orderedIntervals.add(intervals[label - 'a']);
+        }
         return null;
     }
 
