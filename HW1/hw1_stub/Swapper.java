@@ -14,5 +14,11 @@ public class Swapper implements Runnable {
     @Override
     public void run() {
         // TODO: Implement me!
+        int chunkSize = interval.getY() - interval.getX() + 1;
+        int j = 0;
+        for (int i = offset; i < offset + chunkSize; i++) {
+            buffer[i] = content.charAt(interval.getX() + j);
+            j++;
+        }
     }
 }
