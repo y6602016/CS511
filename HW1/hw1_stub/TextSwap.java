@@ -57,13 +57,8 @@ public class TextSwap {
         char[] buff = new char[numChunks * chunkSize];
         int offset = 0;
         for (Interval interval : orderedIntervals) {
-            Thread t = new Thread(new Swapper(interval, content, buff, offset));
-            t.start();
-            try {
-                t.join();
-            } catch (Exception e) {
-                System.out.println("Thread error!");
-            }
+            Swapper swapper = new Swapper(interval, content, buff, offset);
+            swapper.run();
             offset += chunkSize;
         }
         System.out.println(buff);
