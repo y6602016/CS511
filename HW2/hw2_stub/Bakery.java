@@ -15,6 +15,10 @@ public class Bakery implements Runnable {
     private CountDownLatch doneSignal = new CountDownLatch(TOTAL_CUSTOMERS);
     // TODO
 
+    // 1. create 3 Semaphores for 3 types bread shelves
+    // 2. create a Semaphore with 4 initial permits for cashiers
+    // 3. create a Semaphore for the cashiers to add sales
+
     /**
      * Remove a loaf from the available breads and restock if necessary
      */
@@ -51,5 +55,9 @@ public class Bakery implements Runnable {
         availableBread.put(BreadType.WONDER, FULL_BREAD);
 
         // TODO
+
+        // 1. create Executors.newFixedThreadPool(50) for the max capacity
+        // 2. executorService.execute(new customer())
+        // 3. doneSignal.await() -> executor.shutdown();
     }
 }

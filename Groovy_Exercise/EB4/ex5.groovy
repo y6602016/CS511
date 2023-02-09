@@ -1,12 +1,15 @@
 import java.util.concurrent.Semaphore
-Semaphore okToE = new Semaphore(2);
+Semaphore okToF = new Semaphore(0);
+Semaphore okToC = new Semaphore(0);
 Semaphore okToH = new Semaphore(0);
 
 
 Thread.start { // P
   while(true) {
     print("A");
+    okToF.release();
     print("B");
+    okToC.acquire();
     print("C");
     print("D");
   }
@@ -14,21 +17,19 @@ Thread.start { // P
 
 Thread.start { // Q
   while(true) {
-    okToE.acquire();
     print("E");
+    okToH.releare();
+    okToF.acquire();
     print("F");
     print("G");
-    okToH.release();
+    okToC.release();
   }
 }
 
 Thread.start { // R
   while(true) {
     okToH.acquire();
-    okToH.acquire();
     print("H");
     print("I");
-    okToE.release();
-    okToE.release();
   }
 }

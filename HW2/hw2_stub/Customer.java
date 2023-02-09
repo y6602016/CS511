@@ -10,12 +10,14 @@ public class Customer implements Runnable {
     private int shopTime;
     private int checkoutTime;
     private CountDownLatch doneSignal;
-    
+
     /**
      * Initialize a customer object and randomize its shopping cart
      */
     public Customer(Bakery bakery, CountDownLatch l) {
         // TODO
+
+        // call fillShoppingCart() to randomize the cart with the desired breads
     }
 
     /**
@@ -23,13 +25,21 @@ public class Customer implements Runnable {
      */
     public void run() {
         // TODO
+
+        // 1. based on the desired bread type, using the corresponding Semaphores
+        // to take the bread by calling takeBread()
+        // 2. using the Cashier Semaphore to check out
+        // 3. calls getItemsValue() in the Cashier critical section then use the Sales
+        // Semaphore to add sales.
+        // 4. send signal to doneSignal.countDown() to end the task
     }
 
     /**
      * Return a string representation of the customer
      */
     public String toString() {
-        return "Customer " + hashCode() + ": shoppingCart=" + Arrays.toString(shoppingCart.toArray()) + ", shopTime=" + shopTime + ", checkoutTime=" + checkoutTime;
+        return "Customer " + hashCode() + ": shoppingCart=" + Arrays.toString(shoppingCart.toArray()) + ", shopTime="
+                + shopTime + ", checkoutTime=" + checkoutTime;
     }
 
     /**
