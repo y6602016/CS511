@@ -13,11 +13,10 @@ Semaphore lots = new Semaphore(N)
 Semaphore countCats = new Semaphore(1)
 Semaphore countDogs = new Semaphore(1)
 Semaphore area = new Semaphore(1)
-Semaphore entryqueue = new Semaphore(1, true)
 int cats = 0
-dogs = 0
+int dogs = 0
 
-10.times { //Cat
+20.times { //Cat
   int id = it
   Thread.start {
     countCats.acquire()
@@ -43,7 +42,7 @@ dogs = 0
   }
 }
 
-10.times { //Dog
+15.times { //Dog
   int id = it
   Thread.start {
     countDogs.acquire()

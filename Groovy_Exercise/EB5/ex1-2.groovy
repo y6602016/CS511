@@ -15,7 +15,7 @@ itGotLate = false
 20.times {
   int id = it
   Thread.start {// Jets
-    // mutex.acquire()
+    mutex.acquire()
     if (!itGotLate) {
       // mutex.acquire() // mutex CANN'T be here! If multiple fans are stuck here(not happy hour yet)
       // and then happy hour is on, the first fan can get in because happy hour only releases two tickets
