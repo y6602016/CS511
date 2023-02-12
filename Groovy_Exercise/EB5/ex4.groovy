@@ -4,6 +4,7 @@ import java.util.concurrent.Semaphore
 // After the client get the permit, if the current MAX_WEIGHTS is not enough for the client, the client would stay 
 // in the while loop until others return weights and there are enough weights for him. 
 // Therefore, every client eventually get the desired amount of weights and never starves.
+// Also, we use strong semaphores for the apparatus to avoid starvation.
 
 
 MAX_WEIGHTS = 10;
