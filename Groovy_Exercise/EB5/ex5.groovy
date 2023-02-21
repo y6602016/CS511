@@ -17,31 +17,27 @@ doneProcessing = [new Semaphore(0), new Semaphore(0), new Semaphore(0)] // list 
 5.times {
   int id = it
   Thread.start { // Car
-  // Go to station 0
-  station0.acquire()
-  println("Car " + id + " is already in the station 0")
-  permToProcess[0].release()
-  doneProcessing[0].acquire()
+    // Go to station 0
+    station0.acquire()
+    println("Car " + id + " is already in the station 0")
+    permToProcess[0].release()
+    doneProcessing[0].acquire()
+
+    // Move on to station 1
+    station1.acquire()
+    println("Car " + id + " is already in the station 1")
+    station0.release()
+    permToProcess[1].release()
+    doneProcessing[1].acquire()
 
 
-  // Move on to station 1
-  station1.acquire()
-  println("Station 0 is done and car " + id + " is leaving the station 0")
-  station0.release()
-  println("Car " + id + " is already in the station 1")
-  permToProcess[1].release()
-  doneProcessing[1].acquire()
-
-
-  // Move on to station 2
-  station2.acquire()
-  println("Station 1 is done and car " + id + " is leaving the station 1")
-  station1.release()
-  println("Car " + id + " is already in the station 2")
-  permToProcess[2].release()
-  doneProcessing[2].acquire()
-  println("Station 2 is done and car " + id + " is leaving the station 2")
-  station2.release()
+    // Move on to station 2
+    station2.acquire()
+    println("Car " + id + " is already in the station 2")
+    station1.release()
+    permToProcess[2].release()
+    doneProcessing[2].acquire()
+    station2.release()
   }
 }
 

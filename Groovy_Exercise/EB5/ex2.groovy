@@ -10,60 +10,61 @@ import java.util.concurrent.Semaphore
 // if dogs(cats) = 0 when exiting the lot, it's the last dog(cat), either dog or cat can enter 
 final int N = 5
 Semaphore lots = new Semaphore(N)
-Semaphore countCats = new Semaphore(1)
-Semaphore countDogs = new Semaphore(1)
+Semaphore mutexCats = new Semaphore(1)
+Semaphore mutexDogs = new Semaphore(1)
 Semaphore area = new Semaphore(1)
-int cats = 0
-int dogs = 0
+animals = [0, 0] // [cat, dog]
 
 20.times { //Cat
   int id = it
   Thread.start {
-    countCats.acquire()
-    cats++
-    if (cats == 1){
+    mutexCats.acquire()
+    if (animals[0] == 0){ // who comes first, who acquires
       area.acquire()
     }
-    countCats.release()
+    animals[0]++
+    mutexCats.release()
 
     // access feeding lot
     lots.acquire()
     // eat
     println("The " + id + "th cat is eating")
+    println("cats: " + animals[0] + ", dogs: " + animals[1])
     // exit feeding lot
     lots.release()
 
-    countCats.acquire()
-    cats--
-    if (cats == 0) {
+    mutexCats.acquire()
+    animals[0]--
+    if (animals[0] == 0) {
       area.release()
     }
-    countCats.release()
+    mutexCats.release()
   }
 }
 
 15.times { //Dog
   int id = it
   Thread.start {
-    countDogs.acquire()
-    dogs++
-    if (dogs == 1) {
+    mutexDogs.acquire()
+    if (animals[1] == 0) {
       area.acquire()
     }
-    countDogs.release()
+    animals[1]++
+    mutexDogs.release()
 
     // access feeding lot
     lots.acquire()
     // eat
     println("The " + id + "th dog is eating")
+    println("cats: " + animals[0] + ", dogs: " + animals[1])
     // exit feeding lot
     lots.release()
 
-    countDogs.acquire()
-    dogs--
-    if (dogs == 0) {
+    mutexDogs.acquire()
+    animals[1]--
+    if (animals[1] == 0) {
       area.release()
     }
-    countDogs.release()
+    mutexDogs.release()
   }
 }

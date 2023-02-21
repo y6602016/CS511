@@ -3,7 +3,7 @@ import java.util.concurrent.Semaphore
 Semaphore resource = new Semaphore(1)
 int r = 0
 Semaphore readerMutex = new Semaphore(1) // for counting the num of readers
-Semaphore entryqueue = new Semaphore(1, true)
+Semaphore entryqueue = new Semaphore(1, true) // used to ensure w/r both have chance to "acquire", no starvation
 
 10.times{
   int id = it

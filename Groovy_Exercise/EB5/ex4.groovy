@@ -8,16 +8,13 @@ import java.util.concurrent.Semaphore
 
 
 MAX_WEIGHTS = 10;
-GYM_CAP = 50;
+GYM_CAP = 20;
 // Declare semaphores here
 Semaphore enterGym = new Semaphore(GYM_CAP)
 Semaphore getDiscQueue = new Semaphore(1, true)
-// Semaphore returnDiscQueue = new Semaphore(1, true)
-Semaphore weightMutex = new Semaphore(1) // getting and returning share the same variable, it needs to be atomic
-Semaphore app0 = new Semaphore(1, true)
-Semaphore app1 = new Semaphore(1, true)
-Semaphore app2 = new Semaphore(1, true)
-Semaphore app3 = new Semaphore(1, true)
+Semaphore returnDiscQueue = new Semaphore(1, true)
+Semaphore getDisc = new Semaphore(MAX_WEIGHTS)
+mutexApp = [new Semaphore(1, true), new Semaphore(1, true), new Semaphore(1, true), new Semaphore(1, true)]
 
 def make_routine(int no_exercises) { // returns a random routine
   Random rand = new Random();
@@ -35,60 +32,32 @@ def make_routine(int no_exercises) { // returns a random routine
     def routine = make_routine(20); // random routine of 20 exercises
     // enter gym
     enterGym.acquire()
+    println("$id is entering");
 
     routine.size().times{
       // complete exercise on machine
-
+      println("$id needs: " + routine[it][1] + " weights");
       getDiscQueue.acquire()
-      while (MAX_WEIGHTS < routine[it][1]){}
-      weightMutex.acquire()
-      println("MAX_WEIGHTS: " + MAX_WEIGHTS)
-      MAX_WEIGHTS -= routine[it][1]
-      println("$id is taking "+routine[it][1] + " weights");
-      println("MAX_WEIGHTS: " + MAX_WEIGHTS)
-      weightMutex.release()
+      routine[it][1].times{
+        getDisc.acquire()
+        println("$id takes one weight");
+      }
       getDiscQueue.release()
 
-      switch(routine[it][0]){
-        case 0:
-          app0.acquire()
-          break
-        case 1:
-          app1.acquire()
-          break
-        case 2:
-          app2.acquire()
-          break
-        case 3:
-          app3.acquire()
-          break
-      }
+      mutexApp[routine[it][0]].acquire()
       println("$id is performing:"+routine[it][0] + "--"+ routine[it][1]);
-      switch(routine[it][0]){
-        case 0:
-          app0.release()
-          break
-        case 1:
-          app1.release()
-          break
-        case 2:
-          app2.release()
-          break
-        case 3:
-          app3.release()
-          break
-      }
+      mutexApp[routine[it][0]].release()
 
-      // returnDiscQueue.acquire()
-      weightMutex.acquire()
-      MAX_WEIGHTS += routine[it][1]
-      println("$id is returning "+routine[it][1] + " weights")
-      println("MAX_WEIGHTS: " + MAX_WEIGHTS)
-      weightMutex.release()
-      // returnDiscQueue.release()
+      returnDiscQueue.acquire()
+      routine[it][1].times{
+        getDisc.release()
+        println("$id returns one weight");
+      }
+      returnDiscQueue.release()
     }
 
     // leave gym
+    println("$id is leaving");
     enterGym.release()
   }
 }

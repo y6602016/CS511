@@ -16,11 +16,11 @@ Semaphore mutexC = new Semaphore(1)
     while(true) {
       int item = r.nextInt(10000);
       produce.acquire(); // avoid consumer consumes more
-      mutexP.acquire(); // avoid mutiple producers over-write
+      mutexP.acquire(); // avoid race condition
       buffer[start] = item;
       println(id + " added product " + buffer[start] + " at " + start);
       start = (start + 1) % N;
-      mutexP.release(); // avoid mutiple producers over-write
+      mutexP.release(); 
       consume.release(); // avoid consumer consumes more
     }
   }
@@ -32,12 +32,12 @@ Semaphore mutexC = new Semaphore(1)
   Thread.start {
     while(true) {
       consume.acquire(); // avoid consumer consumes more
-      mutexC.acquire(); // avoid mutiple consumers over-consume
+      mutexC.acquire(); // avoid race condition
       int item = buffer[end]
       println(id + " consumed product " + item + " at " + end);
       end = (end + 1) % N;
-      mutexC.release(); // avoid mutiple consumers over-consume
-      produce.release(); // avoid consumer consumes more
+      mutexC.release(); 
+      produce.release(); // consume one, release one
     }
   }
 }

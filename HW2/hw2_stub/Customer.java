@@ -1,3 +1,6 @@
+// Qi-Rui Hong - 10475677
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -10,14 +13,24 @@ public class Customer implements Runnable {
     private int shopTime;
     private int checkoutTime;
     private CountDownLatch doneSignal;
+    private static int[] breads = new int[3];
 
     /**
      * Initialize a customer object and randomize its shopping cart
      */
     public Customer(Bakery bakery, CountDownLatch l) {
         // TODO
-
         // call fillShoppingCart() to randomize the cart with the desired breads
+        this.bakery = bakery;
+        this.doneSignal = l;
+        this.rnd = new Random();
+        this.shoppingCart = new ArrayList<BreadType>();
+        this.shopTime = 1 + rnd.nextInt(1000);
+        this.checkoutTime = 1 + rnd.nextInt(1000);
+        this.fillShoppingCart();
+        System.out.println("Number of breads [RYE, SOURDOUGH, WONDER]:" + Arrays.toString(this.breads));
+        System.out.printf("Expected sales: %.2f\n",
+                (this.breads[0] * 3.99 + this.breads[1] * 4.99 + this.breads[2] * 5.99));
     }
 
     /**
@@ -25,13 +38,91 @@ public class Customer implements Runnable {
      */
     public void run() {
         // TODO
+        // Based on the bread type to use the corresponding Semaphores to take the
+        // bread by calling takeBread()
+        for (BreadType breadType : shoppingCart) {
+            switch (breadType) {
+                case RYE:
+                    try {
+                        this.bakery.breadRYEShelves.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case SOURDOUGH:
+                    try {
+                        this.bakery.breadSOURDOUGHShelves.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case WONDER:
+                    try {
+                        this.bakery.breadWONDERShelves.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
 
-        // 1. based on the desired bread type, using the corresponding Semaphores
-        // to take the bread by calling takeBread()
-        // 2. using the Cashier Semaphore to check out
-        // 3. calls getItemsValue() in the Cashier critical section then use the Sales
-        // Semaphore to add sales.
-        // 4. send signal to doneSignal.countDown() to end the task
+            // shoptime
+            try {
+                Thread.sleep(shopTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            this.bakery.takeBread(breadType);
+
+            switch (breadType) {
+                case RYE:
+                    this.bakery.breadRYEShelves.release();
+                    break;
+                case SOURDOUGH:
+                    this.bakery.breadSOURDOUGHShelves.release();
+                    break;
+                case WONDER:
+                    this.bakery.breadWONDERShelves.release();
+                    break;
+            }
+        }
+
+        // Using the Cashier Semaphore
+        try {
+            this.bakery.cashiers.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Calling getItemsValue() to get total cost
+        float total = getItemsValue();
+
+        // Using the addSales Semaphore
+        try {
+            this.bakery.addToSales.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // add sales
+        this.bakery.addSales(total);
+
+        // checkout time
+        try {
+            Thread.sleep(checkoutTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.bakery.addToSales.release();
+        this.bakery.cashiers.release();
+
+        // Sending signal to doneSignal.countDown() to end the task
+        try {
+            this.doneSignal.countDown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -51,6 +142,7 @@ public class Customer implements Runnable {
             return false;
         }
         shoppingCart.add(bread);
+        this.breads[BreadType.valueOf(bread.toString()).ordinal()]++;
         return true;
     }
 
