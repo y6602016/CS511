@@ -1,6 +1,6 @@
 import java.util.concurrent.Semaphore;
 
-// 2. No. It's not fair since there are two seperate queues.
+// 2. No. It's not fair since one side might starve and never enter the road
 // ex: q1 = [a, b], q2 = [c, d], and q1 acquires the road
 // and then "e" arrives at q1, "e" runs before "c" and "d" in q2.
 // q2 only can run whenever q1 becomes empty -> q2 starves

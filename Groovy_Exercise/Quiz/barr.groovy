@@ -1,42 +1,45 @@
-import java.util.concurrent.Semaphore
-// One-time use barrier
-// Barrier size = N
-// Total number of threads in the system = N
 
-final int N=3
-int t=0
-Semaphore barrier = new Semaphore(0)
-Semaphore barrier2 = new Semaphore(0)
-Semaphore mutex = new Semaphore(1)
-c = new int[N]
-N.times {
-    int id = it
-    Thread.start {
-			while (true) {
-				// barrier arrival protocol
-				mutex.acquire()
-				c[id]++
-				if (t < N) {
-					t++
-					if (t==N) {
-							N.times { barrier.release() }
-					}
-				}
-				mutex.release()
-				// barrier
-				println id+" got to barrier. c="+c[id]
-				barrier.acquire() 
-				println id+" went through. c="+c[id]	
-				
-				mutex.acquire()
-				t--
-				if (t == 0){
-					N.times{
-						barrier2.release()
-					}
-				}
-				mutex.release()
-				barrier2.acquire()
-			}
+// Quiz 4
+// 23 Feb 2023
+// One-time-use barrier
+
+// Name 1: Qi-Rui Hong
+// Name 2:
+
+class Barrier {
+    int size
+    int arrival = 0
+
+    Barrier(int size) {
+	    this.size=size
     }
+
+    public synchronized void reached(){
+        arrival++
+        while (arrival < size){
+            wait()
+        }
+        notifyAll() // or using notify() for cascading signling
+    }
+    
+}
+
+Barrier b = new Barrier(3)
+
+Thread.start {// P
+    println "1"
+    b.reached()
+    println "a"
+}
+
+Thread.start {// Q
+    println "2"
+    b.reached()
+    println "b"
+}
+
+Thread.start {// R
+    println "3"
+    b.reached()
+    println "c"
 }
