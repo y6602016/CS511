@@ -47,7 +47,7 @@ class RW{
     lock.lock()
     try{
       writers = writers - 1
-      okToRead.signalAll()
+      okToRead.signalAll() // waking up all readers
       okToWrite.signal()
     }finally{
       lock.unlock()
