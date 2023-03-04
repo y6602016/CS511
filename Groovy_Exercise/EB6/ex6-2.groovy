@@ -23,7 +23,7 @@ class Pizza {
       }
       s--
       println("Take a small pizza, l:" + l + ", s:" + s)
-      okBake.signalAll()
+      okBake.signal()
     }finally{
       lock.unlock()
     }
@@ -39,14 +39,14 @@ class Pizza {
       if(l >= 1){
         l--
         println("Take a large pizza, l:" + l + ", s:" + s)
+        okBake.signal()
       }
       else if(s >= 2){
         s = s - 2
         println("Take large pizza(two small), l:" + l + ", s:" + s)
+        okBake.signal()
+        okBake.signal()
       }
-      okBake.signalAll() // if using signal(), the counter only bakes one pizza
-      // but there is a problem, ex: taking two small for one large, then signal()
-      // but only one small is created. using signalAll()
     }finally{
       lock.unlock()
     }
@@ -55,16 +55,14 @@ class Pizza {
   void bakeSmallPizza() {
     lock.lock()
     try{
-      while(l + s == N){
+      while(l + s >= N){
         println("Waiting for baking, l:" + l + ", s:" + s)
         okBake.await()
       }
       s++
       println("Bake a small pizza, l:" + l + ", s:" + s)
       okSmall.signal()
-      if(s > 0 && s % 2 == 0){
-        okLarge.signal()
-      }
+      okLarge.signal()
     }finally{
       lock.unlock()
     }
@@ -73,7 +71,7 @@ class Pizza {
   void bakeLargePizza() {
     lock.lock()
     try{
-      while(l + s == N){
+      while(l + s >= N){
         println("Waiting for baking, l:" + l + ", s:" + s)
         okBake.await()
       }

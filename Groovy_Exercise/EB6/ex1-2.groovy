@@ -20,7 +20,7 @@ class Bar {
 
   public synchronized patriots(){
     p++
-    if (p > 0 && p % 2 == 0 && !late){
+    if (p % 2 == 0 && !late){
       notify()
     }
     println("Patriots")

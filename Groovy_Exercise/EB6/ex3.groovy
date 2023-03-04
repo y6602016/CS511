@@ -3,6 +3,7 @@ class Barrier{
   private arrival
   Barrier(int s){
     size = s
+    arrival = 0
   }
 
   public synchronized void waitAtBarrier(){

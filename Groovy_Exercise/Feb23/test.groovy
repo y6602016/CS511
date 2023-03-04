@@ -1,69 +1,112 @@
 import java.util.concurrent.locks.*
 
-class ForkMonitor{
-  final int N
-  List<Integer> forks = []
+class TrainStation {
   Lock lock = new ReentrantLock()
-  List<Condition> okEat = [] 
+  Condition okN = lock.newCondition()
+  Condition okS = lock.newCondition()
+  Condition okF = lock.newCondition()
+  boolean n = flase, s = false
 
-  ForkMonitor(int size){
-    N = size
-    N.times{forks.add(2)}
-    N.times{okEat.add(lock.newCondition())}
-  }
-
-  private void updateForks(int i, int delta){
+  void acquireNorthTrackP() {
     lock.lock()
     try{
-      forks[(i + 1) % N] = forks[(i + 1) % N] + delta
-      if (i - 1 >= 0){
-        forks[i - 1] = forks[i - 1] + delta
-      }else{ // i = 0
-        forks[N - 1] = forks[N - 1] + delta
+      while(n){
+        okN.await()
+      }
+      n = true
+    }finally{
+      lock.unlock()
+    }
+  }
+
+  void releaseNorthTrackP() {
+    lock.lock()
+    try{
+      n = false
+      okN.signal()
+      if(!south){
+        okF.signal()
       }
     }finally{
       lock.unlock()
     }
   }
 
-  public void takeForks(int i){
+  void acquireSouthTrackP() {
     lock.lock()
     try{
-      while(forks[i] != 2){
-        okEat[i].await()
+      while(s){
+        okS.await()
       }
-      updateForks(i, -1)
+      s = true
     }finally{
       lock.unlock()
     }
   }
 
-  public void releaseForks(int i){
+  void releaseSouthTrackP() {
     lock.lock()
     try{
-      updateForks(i, 1)
-      if (forks[(i + 1) % N] == 2){
-        okEat[(i + 1) % N].signal()
-      }
-      if (forks[(i - 1) % N] == 2){
-        okEat[(i - 1) % N].signal()
+      s = false
+      okS.signal()
+      if(!north){
+        okF.signal()
       }
     }finally{
       lock.unlock()
     }
   }
+
+  void acquireTracksF() {
+    lock.lock()
+    try{ 
+      while(s || n){
+        okF.await()
+      }
+      s = true
+      n = true
+    }finally{
+      lock.unlock()
+    }
+  }
+
+  void releaseTracksF() {
+    lock.lock()
+    try{
+      n = false
+      s = false
+      okN.signal()
+      okS.signal()
+      okF.signal()
+    }finally{
+      lock.unlock()
+    }
+  } 
+}
+
+TrainStation s = new TrainStation();
+
+200.times{
+  Thread.start { // Passenger Train going North 
+    s.acquireNorthTrackP();
+    println "NPT" + Thread.currentThread().getId(); 
+    s.releaseNorthTrackP();
+  } 
+}
+
+200.times{
+  Thread.start { // Passenger Train going South 
+    s.acquireSouthTrackP();
+    println "SPT"+ Thread.currentThread().getId(); 
+    s.releaseSouthTrackP()
+  } 
 }
 
 
-ForkMonitor f = new ForkMonitor(5)
-5.times{
-  int id = it
-  Thread.start{
-    3.times{
-      f.takeForks(id)
-      println(id + " grabs forks")
-      println(id + " releases forks")
-      f.releaseForks(id)
-    }
+200.times {
+  Thread.start { // Freight Train 
+    s.acquireTracksF();
+    println "FT "+ Thread.currentThread().getId(); 
+    s.releaseTracksF();
   }
 }

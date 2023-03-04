@@ -25,9 +25,10 @@ class TrainStation {
     try{
       north = false
       okNorth.signal()
-      if (!south){ // if south is empty, freight can acquire
-        okF.signal()
-      }
+      okF.signal()
+      // if (!south){ // if south is empty, freight can acquire
+      //   okF.signal()
+      // }
     }finally{
       lock.unlock()
     }
@@ -50,9 +51,10 @@ class TrainStation {
     try{
       south = false
       okSouth.signal()
-      if (!north){ // if north is empty, freight can acquire
-        okF.signal()
-      }
+      okF.signal()
+      // if (!north){ // if north is empty, freight can acquire
+      //   okF.signal()
+      // }
     }finally{
       lock.unlock()
     }

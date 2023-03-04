@@ -32,7 +32,7 @@ enterMutex = [new Semaphore(3, true), new Semaphore(3, true)]
 
     // cross crossing
     // println("Car " + id + " is leaving from " + myEndpoint)
-    println("Enpoint 0: " + noOfCarsCrossing[0] + ", Enpoint 1: "+ noOfCarsCrossing[1])
+    println ("car $id crossing in direction "+myEndpoint + " current totals "+noOfCarsCrossing);
 
     // exit protocol
     endpointMutex[myEndpoint].acquire()

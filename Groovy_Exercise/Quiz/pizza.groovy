@@ -1,3 +1,5 @@
+// name: Qi-Rui Hong
+
 import java.util.concurrent.locks.*
 
 class Pizza {
@@ -48,7 +50,7 @@ class Pizza {
       s++
       println("Bake a small pizza, l:" + l + ", s:" + s)
       okSmall.signal()
-      okLarge.signal()
+      okLarge.signal() 
     }finally{
       lock.unlock()
     }
@@ -69,27 +71,25 @@ class Pizza {
 Pizza p = new Pizza()
 
 
+20.times { // 100 clients
+    Thread.start {
+    if ((new Random()).nextInt(2)== 0)
+     { p.purchaseSmallPizza() }
+     else 
+     { p.purchaseLargePizza() }
+    }
+}
 
-5.times{
-  Thread.start{
-    p.purchaseSmallPizza()
+2.times { // 10 bake rs
+  Thread.start {
+    10.times { // 10 pizzas each baker
+      if ((new Random()).nextInt(2) == 0)
+      {p.bakeSmallPizza()}
+      else 
+        {p.bakeLargePizza()}
+    }
   }
 }
 
-100.times{
-  Thread.start{
-    p.bakeSmallPizza()
-  }
-}
 
-10.times{
-  Thread.start{
-    p.purchaseLargePizza()
-  }
-}
 
-5.times{
-  Thread.start{
-    p.bakeLargePizza()
-  }
-}
