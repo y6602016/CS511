@@ -49,8 +49,14 @@ class ForkMonitor{
       if (forks[(i + 1) % N] == 2){
         okEat[(i + 1) % N].signal()
       }
-      if (forks[(i - 1) % N] == 2){
-        okEat[(i - 1) % N].signal()
+      if(i > 0){
+        if(forks[(i - 1) % N] == 2){
+          okEat[(i - 1) % N].signal()
+        }
+      }else{
+        if(forks[N - 1] == 2){
+          okEat[N - 1].signal()
+        }
       }
     }finally{
       lock.unlock()

@@ -1,36 +1,61 @@
 import java.util.concurrent.Semaphore;
 
+Semaphore c = new Semaphore(6, true)
 
-final int N = 8
-Semaphore barrier = new Semaphore(0)
-Semaphore barrier2 = new Semaphore(0)
-Semaphore mutex = new Semaphore(1, true)
-r = 0
+int t = 0
+Semaphore mutex = new Semaphore(1)
+Semaphore truck = new Semaphore(2, true)
+int c2 = 0
+int b = 0
 
 
-N.times {
-  Thread.start { // 
-    while(true) {
-      mutex.acquire()
-      r++
-      if (r == N){
-        N.times{
-          barrier.release()
-        }
+
+100.times {
+  int id = it
+  Thread.start { 
+    mutex.acquire()
+    if(t == 0){
+      6.times{
+        c.acquire()
       }
-      mutex.release()
-      barrier.acquire()
-
-      mutex.acquire()
-      r--
-      if (r == 0){
-        N.times{
-          barrier2.release()
-        }
-      }
-      mutex.release()
-      barrier2.acquire()
     }
+    t++
+    mutex.release()
+    truck.acquire()
+    println("t")
+    println("leave")
+
+    truck.release()
+    mutex.acquire()
+    t--
+    if(t == 0){
+      6.times{
+        c.release()
+      }
+    }
+    mutex.release()
   }
 }
+
+100.times {
+  int id = it
+  Thread.start { 
+    c.acquire()
+    c2++
+    println("C " + c2)
+    c2--
+    c.release()
+  }
+}
+
+// 3.times{
+//   int id = it
+//   Thread.start { // Loading Machine
+//     while (true) {
+//       permToLoad[id].acquire()
+//       doneLoading[id].release()
+//     }
+//   }
+// }
+
 

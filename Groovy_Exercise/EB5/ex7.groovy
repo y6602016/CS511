@@ -8,7 +8,7 @@ Semaphore mutex = new Semaphore(1)
 stationMutex = [new Semaphore(1, true), new Semaphore(1, true)]
 trains = [0, 0]
 
-200.times {
+50.times {
   int id = it
   int dir = (new Random()).nextInt(2);
   Thread.start { // Freight Train travelling in direction dir
@@ -35,7 +35,7 @@ Thread.start { // Loading Machine
   }
 }
 
-200.times {
+50.times {
   int id = it
   int dir = (new Random()).nextInt(2);
   Thread.start { // PassengerTrain travelling in direction dir

@@ -8,7 +8,7 @@ import java.util.concurrent.Semaphore
 
 
 MAX_WEIGHTS = 10;
-GYM_CAP = 20;
+GYM_CAP = 2;
 // Declare semaphores here
 Semaphore enterGym = new Semaphore(GYM_CAP)
 Semaphore getDiscQueue = new Semaphore(1, true)
@@ -18,7 +18,7 @@ mutexApp = [new Semaphore(1, true), new Semaphore(1, true), new Semaphore(1, tru
 
 def make_routine(int no_exercises) { // returns a random routine
   Random rand = new Random();
-  int size = rand.nextInt(no_exercises);
+  int size = 1 + rand.nextInt(no_exercises);
   def routine = [];
   size.times {
     routine.add(new Tuple(rand.nextInt(4),rand.nextInt(MAX_WEIGHTS)));
@@ -26,14 +26,14 @@ def make_routine(int no_exercises) { // returns a random routine
   return routine;
 }
 
-100.times {
+4.times {
   int id = it;
   Thread.start { // Client
-    def routine = make_routine(20); // random routine of 20 exercises
+    def routine = make_routine(3); // random routine of 20 exercises
     // enter gym
     enterGym.acquire()
     println("$id is entering");
-
+    println("$id routine " + routine)
     routine.size().times{
       // complete exercise on machine
       println("$id needs: " + routine[it][1] + " weights");
@@ -50,8 +50,8 @@ def make_routine(int no_exercises) { // returns a random routine
 
       returnDiscQueue.acquire()
       routine[it][1].times{
-        getDisc.release()
         println("$id returns one weight");
+        getDisc.release()
       }
       returnDiscQueue.release()
     }

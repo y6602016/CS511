@@ -62,7 +62,12 @@ class Pizza {
       s++
       println("Bake a small pizza, l:" + l + ", s:" + s)
       okSmall.signal()
-      okLarge.signal()
+
+      okLarge.signal() 
+
+      if(s > 0 && s % 2 == 0){
+        okLarge.signal()
+      }
     }finally{
       lock.unlock()
     }

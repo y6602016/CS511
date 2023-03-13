@@ -1,112 +1,99 @@
 import java.util.concurrent.locks.*
 
-class TrainStation {
+class Pizza {
+  // Variables declared here
+  int s = 0, l = 0
+  final int N = 5
   Lock lock = new ReentrantLock()
-  Condition okN = lock.newCondition()
+  Condition okL = lock.newCondition()
   Condition okS = lock.newCondition()
-  Condition okF = lock.newCondition()
-  boolean n = flase, s = false
+  Condition okB = lock.newCondition()
 
-  void acquireNorthTrackP() {
+  void purchaseSmallPizza() {
     lock.lock()
     try{
-      while(n){
-        okN.await()
-      }
-      n = true
-    }finally{
-      lock.unlock()
-    }
-  }
-
-  void releaseNorthTrackP() {
-    lock.lock()
-    try{
-      n = false
-      okN.signal()
-      if(!south){
-        okF.signal()
-      }
-    }finally{
-      lock.unlock()
-    }
-  }
-
-  void acquireSouthTrackP() {
-    lock.lock()
-    try{
-      while(s){
+      while(s < 1){
         okS.await()
       }
-      s = true
+      s--
+      okB.signal()
     }finally{
       lock.unlock()
     }
   }
 
-  void releaseSouthTrackP() {
+  void purchaseLargePizza() {
     lock.lock()
     try{
-      s = false
-      okS.signal()
-      if(!north){
-        okF.signal()
+      while(l < 1 && s < 2){
+        okL.await()
+      }
+      if(l >= 1){
+        l--
+        okB.signal()
+      }
+      else{
+        s -= 2
+        okB.signal()
+        okB.signal()
       }
     }finally{
       lock.unlock()
     }
   }
 
-  void acquireTracksF() {
+  void bakeSmallPizza() {
     lock.lock()
-    try{ 
-      while(s || n){
-        okF.await()
+    try{
+      while(l + s >= N){
+        okB.await()
       }
-      s = true
-      n = true
+      s++
+      okS.signal()
+      okL.signal()
     }finally{
       lock.unlock()
     }
   }
 
-  void releaseTracksF() {
+  void bakeLargePizza() {
     lock.lock()
     try{
-      n = false
-      s = false
-      okN.signal()
-      okS.signal()
-      okF.signal()
+      while(l + s >= N){
+        okB.await()
+      }
+      l++
+      okL.signal()
     }finally{
       lock.unlock()
     }
-  } 
+  }
 }
 
-TrainStation s = new TrainStation();
+Pizza p = new Pizza()
 
-200.times{
-  Thread.start { // Passenger Train going North 
-    s.acquireNorthTrackP();
-    println "NPT" + Thread.currentThread().getId(); 
-    s.releaseNorthTrackP();
-  } 
+
+
+5.times{
+  Thread.start{
+    p.purchaseSmallPizza()
+  }
 }
 
-200.times{
-  Thread.start { // Passenger Train going South 
-    s.acquireSouthTrackP();
-    println "SPT"+ Thread.currentThread().getId(); 
-    s.releaseSouthTrackP()
-  } 
+100.times{
+  Thread.start{
+    p.bakeSmallPizza()
+  }
 }
 
+10.times{
+  Thread.start{
+    p.purchaseLargePizza()
+  }
+}
 
-200.times {
-  Thread.start { // Freight Train 
-    s.acquireTracksF();
-    println "FT "+ Thread.currentThread().getId(); 
-    s.releaseTracksF();
+5.times{
+  Thread.start{
+    p.bakeLargePizza()
   }
 }

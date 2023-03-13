@@ -1,21 +1,34 @@
-
-
-200.times{
-  int count = 0
-  P = Thread.start{
-    10.times{
-      int temp = count + 1
-      count = temp
-    }
+class Barrier{
+  int size
+  int arrival
+  Barrier(int s){
+    size = s
   }
-  Q = Thread.start{
-    10.times{
-      int temp = count + 1
-      count = temp
+  public synchronized void reached(){
+    arrival++
+    while(arrival < size){
+      wait()
     }
+    notifyAll()
   }
+}
 
-  P.join()
-  Q.join()
-  println(count)
+Barrier b = new Barrier(3)
+
+Thread.start{
+  print("a")
+  b.reached()
+  print("1")
+}
+
+Thread.start{
+  print("b")
+  b.reached()
+  print("2")
+}
+
+Thread.start{
+  print("c")
+  b.reached()
+  print("3")
 }
