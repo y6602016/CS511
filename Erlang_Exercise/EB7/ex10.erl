@@ -17,8 +17,9 @@ mapTree(_F, {empty}) ->
 mapTree(F, {node, Number, LSubtree, RSubtree}) ->
     {node, F(Number), mapTree(F, LSubtree), mapTree(F, RSubtree)}.
 
-foldTree(_F, V, {empty}) ->
+foldTree({_F, V}, {empty}) ->
     V;
-foldTree(F, V, {node, Number, LSubtree, RSubtree}) ->
-    F(Number, foldTree(F, V, LSubtree), foldTree(F, V, RSubtree)).
+foldTree({F, V}, {node, Number, LSubtree, RSubtree}) ->
+    F(Number, foldTree({F, V}, LSubtree), foldTree({F, V}, RSubtree)).
+%%% F(X, Y, Z) vs F(X, F(Y, Z))
 %%% or F(Number, F(foldTree(F, V, LSubtree), foldTree(F, V, RSubtree))).

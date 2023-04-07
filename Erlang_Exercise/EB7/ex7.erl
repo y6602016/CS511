@@ -1,6 +1,7 @@
 -module(ex7).
 -compile(export_all).
 
+%%% use shell:strings(false). to disable auto-converting integer to string
 l1() -> [122, 1, 23, 53, 14, 84, 43].
 l2() -> [2].
 
@@ -16,7 +17,6 @@ zip([X | A], []) -> [{X, none} | zip(A, [])];
 zip([], [Y | B]) -> [{Y, none} | zip([], B)];
 zip([X | A], [Y | B]) -> [{X, Y} | zip(A, B)].
 
-append([], []) -> [];
 append([], Y) -> Y;
 append([X | A], Y) -> [X | append(A, Y)].
 
@@ -43,8 +43,6 @@ take(N, [Y | B]) ->
         true -> [Y | take(N - 1, B)]
     end.
 
-drop(0, []) ->
-    [];
 drop(0, Y) ->
     io:fwrite("~w~n", [Y]),
     Y;

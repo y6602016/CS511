@@ -14,5 +14,5 @@ filter(F, [X | A]) ->
         false -> filter(F, A)
     end.
 
-fold(_F, V, []) -> V;
-fold(F, V, [X | A]) -> F(X, fold(F, V, A)).
+fold({_F, V}, []) -> V;
+fold({F, V}, [X | A]) -> F(X, fold({F, V}, A)).
