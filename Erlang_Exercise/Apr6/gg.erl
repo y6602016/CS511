@@ -4,28 +4,29 @@
 
 start() ->
     S = spawn(?MODULE, server_loop, []),
-    [spawn(?MODULE, client, [S]) || _ <- lists:seq(1, 100)].
+    [spawn(?MODULE, client, [S]) || _ <- lists:seq(1, 3)].
 
 client(S) ->
     S ! {self(), start},
     receive
         {ok, Servlet} ->
-            client_loop(Servlet, rand:uniform(100))
+            client_loop(Servlet, rand:uniform(10))
     end.
 
 client_loop(Servlet, Guess) ->
     Servlet ! {Guess, self()},
     receive
         {true, T} ->
-            io:fwrite("~w guesses correct and tries ~w times~n", [self(), T]);
+            io:fwrite("~w guesses correct ~w and tries ~w times~n", [self(), Guess, T]);
         {tryagain} ->
-            client_loop(Servlet, rand:uniform(100))
+            io:fwrite("~w guesses ~w, but it's wrong~n", [self(), Guess]),
+            client_loop(Servlet, rand:uniform(10))
     end.
 
 server_loop() ->
     receive
         {From, start} ->
-            Servlet = spawn(?MODULE, servlet, [rand:uniform(100), 0]),
+            Servlet = spawn(?MODULE, servlet, [rand:uniform(10), 1]),
             From ! {ok, Servlet},
             server_loop()
     end.

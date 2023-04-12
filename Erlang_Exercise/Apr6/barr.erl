@@ -24,5 +24,5 @@ coordinator(N, 0, L) ->
 coordinator(N, M, L) when M > 0 ->
     receive
         {reached, From} ->
-            coordinator(N, M - 1, L ++ [From])
+            coordinator(N, M - 1, [From | L])
     end.

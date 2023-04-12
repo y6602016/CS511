@@ -30,7 +30,7 @@ clientLoop(Servlet, R, Guess) ->
             io:fwrite("~w guesses correct value: ~w~n", [self(), Guess]);
         {Servlet, R, false} ->
             io:fwrite("~w guesses ~w, but it's wrong~n", [self(), Guess]),
-            clientLoop(Servlet, R, Guess + 1)
+            clientLoop(Servlet, R, rand:uniform(100))
     end.
 
 client(S) ->
@@ -38,5 +38,5 @@ client(S) ->
     S ! {self(), R, start},
     receive
         {S, Servlet, R, ok} ->
-            clientLoop(Servlet, R, 0)
+            clientLoop(Servlet, R, rand:uniform(100))
     end.
