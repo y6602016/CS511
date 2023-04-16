@@ -1,34 +1,37 @@
 -module(test).
 -compile(export_all).
+-compile(nowarn_export_all).
 
-cleaner(C, D) ->
-    receive
-        {drop} ->
-            cleaner(C, D + 1);
-        {From, ready} when D > 0 ->
-            From ! {self(), ok},
-            cleaner(C + 1, D - 1);
-        {From, picj} when C > 0 ->
-            From ! {self(), ok},
-            cleaner(C - 1, D)
-    end.
+producer(S) ->
+    startProduce(S),
+    timer:sleep(1000),
+    stopProduce(S).
 
-e(S) ->
-    S ! {drop},
-    S ! {self(), pick},
+startProduce(S) ->
+    S ! {self(), start_produce},
     receive
-        {S, ok} -> ok
-    end.
-
-c(S) ->
-    S ! {self(), ready},
-    receive
-        {S, ok} ->
-            timer:sleep(1000),
+        {ok} ->
             ok
     end.
 
-start(C, D) ->
-    S = spawn(?MODULE, cleaner, [C, D]),
-    [spawn(?MODULE, e, [S]) || _ <- lists:seq(1, C)],
-    [spawn(?MODULE, e, [S]) || _ <- lists:seq(1, D)].
+stopProduce(S) ->
+    S ! {stop_produce}.
+
+resource(Size, Cap, P, C) ->
+    receive
+        {From, start_produce} when Size + P < Cap ->
+            From ! {ok},
+            resource(Size, Cap, P + 1, C);
+        {stop_produce} ->
+            resource(Size + 1, Cap, P - 1, C);
+        {From, start_consume} when Size - C > 0 ->
+            From ! {ok},
+            resource(Size, Cap, P, C + 1);
+        {stop_consume} ->
+            resource(Size - 1, Cap, P, C - 1)
+    end.
+
+start(Cap, P, C) ->
+    DC = spawn(?MODULE, resource, [0, Cap, 0, 0]),
+    [spawn(?MODULE, producer, [DC]) || _ <- lists:seq(1, P)],
+    [spawn(?MODULE, consumer, [DC]) || _ <- lists:seq(1, C)].

@@ -2,17 +2,7 @@
 -compile(nowarn_export_all).
 -compile(export_all).
 
-server(T, M) ->
-    timer:sleep(T),
-    Nodes = maps:keys(M),
-    [Pid ! {tick, maps:get(Pid, M)} || Pid <- Nodes],
-    server(T, M).
-
-n(Token) ->
-    receive
-        {tick, N} ->
-            [P ! {self(), Token} || P <- N],
-            n(Token);
-        {From, T} ->
-            n(Token)
-    end.
+start() ->
+    R = ["a", "b", "c"],
+    T = "dd",
+    io:format("~w\n", [lists:member(T, R)]).
