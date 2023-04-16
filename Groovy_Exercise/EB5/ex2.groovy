@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore
 // if dogs(cats) = 0 when exiting the lot, it's the last dog(cat), either dog or cat can enter 
 final int N = 5
 Semaphore lots = new Semaphore(N)
+Semaphore mutex = new Semaphore(1)
 Semaphore mutexCats = new Semaphore(1)
 Semaphore mutexDogs = new Semaphore(1)
 Semaphore area = new Semaphore(1)
@@ -18,12 +19,14 @@ animals = [0, 0] // [cat, dog]
 20.times { //Cat
   int id = it
   Thread.start {
+    mutex.acquire()
     mutexCats.acquire()
     if (animals[0] == 0){ // who comes first, who acquires
       area.acquire()
     }
     animals[0]++
     mutexCats.release()
+    mutex.release()
 
     // access feeding lot
     lots.acquire()
@@ -45,12 +48,14 @@ animals = [0, 0] // [cat, dog]
 15.times { //Dog
   int id = it
   Thread.start {
+    mutex.acquire()
     mutexDogs.acquire()
     if (animals[1] == 0) {
       area.acquire()
     }
     animals[1]++
     mutexDogs.release()
+    mutex.release()
 
     // access feeding lot
     lots.acquire()
