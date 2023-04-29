@@ -1,8 +1,7 @@
 -module(client).
-
 -export([main/1, initial_state/2]).
-
 -include_lib("./defs.hrl").
+-author("Qi-Rui Hong").
 
 -spec main(_InitialState) -> _.
 -spec listen(_State) -> _.
@@ -44,6 +43,11 @@ listen(State) ->
                     listen(NextState);
                 %% if shutdown is received, terminate
                 shutdown ->
+                    ok_shutdown;
+                %% if ack_quit is received, reply to sender then terminate
+                ack_quit ->
+                    From ! {result, self(), Ref, ack_quit},
+                    io:format("The client ~w shuts down!~n", [self()]),
                     ok_shutdown;
                 %% if ok_msg_received, then we don't need to reply to sender.
                 ok_msg_received ->
@@ -164,8 +168,17 @@ do_new_nick(State, Ref, NewNick) ->
 
 %% executes send message protocol from client perspective
 do_msg_send(State, Ref, ChatName, Message) ->
-    io:format("client:do_new_nick(...): IMPLEMENT ME~n"),
-    {{dummy_target, dummy_response}, State}.
+    % the sending client must look up the PID of the chatroom in its list of connected chats
+    ChatRoomPID = maps:get(ChatName, State#cl_st.con_ch),
+
+    % the sending client will then send the message to the chatroom
+    ChatRoomPID ! {self(), Ref, message, Message},
+
+    % the sending client waits for the response from the chatroom
+    receive
+        {_From, Ref, ack_msg} ->
+            {{msg_sent, State#cl_st.nick}, State}
+    end.
 
 %% executes new incoming message protocol from client perspective
 do_new_incoming_msg(State, _Ref, CliNick, ChatName, Msg) ->
@@ -175,5 +188,9 @@ do_new_incoming_msg(State, _Ref, CliNick, ChatName, Msg) ->
 
 %% executes quit protocol from client perspective
 do_quit(State, Ref) ->
-    io:format("client:do_new_nick(...): IMPLEMENT ME~n"),
-    {{dummy_target, dummy_response}, State}.
+    % The client will send the message to the server
+    whereis(server) ! {self(), Ref, quit},
+    receive
+        {_From, Ref, ack_quit} ->
+            {ack_quit, State}
+    end.

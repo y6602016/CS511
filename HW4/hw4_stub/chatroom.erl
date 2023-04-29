@@ -1,8 +1,7 @@
 -module(chatroom).
-
 -include_lib("./defs.hrl").
-
 -export([start_chatroom/1]).
+-author("Qi-Rui Hong").
 
 -spec start_chatroom(_ChatName) -> _.
 -spec loop(_State) -> _.
@@ -69,5 +68,18 @@ do_update_nick(State, ClientPID, NewNick) ->
 %% This function should update all clients in chatroom with new message
 %% (read assignment specs for details)
 do_propegate_message(State, Ref, ClientPID, Message) ->
-    io:format("chatroom:do_propegate_message(...): IMPLEMENT ME~n"),
-    State.
+    % the chatroom will then send back to the sending client the message
+    ClientPID ! {self(), Ref, ack_msg},
+
+    % The chatroom will send a message to each receiving client registered to the
+    % chatroom except for the sending client
+    ReceivingList = maps:keys(State#chat_st.registrations) -- [ClientPID],
+    CliNick = maps:get(ClientPID, State#chat_st.registrations),
+    [
+        PID ! {request, self(), Ref, {incoming_msg, CliNick, State#chat_st.name, Message}}
+     || PID <- ReceivingList
+    ],
+
+    % the chatroom will then append the new Message to its own chat history
+    NewState = State#chat_st{history = State#chat_st.history ++ [{CliNick, Message}]},
+    NewState.

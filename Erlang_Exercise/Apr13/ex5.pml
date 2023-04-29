@@ -15,8 +15,9 @@ proctype P() {
 init{
   atomic{
     run P();
-    run P()
+    run P();
   }
+  // _nr_pr == 1 -> printf("c = %d\n", c)
   _nr_pr == 1;
   printf("c = %d\n", c)
   assert(c > 2)

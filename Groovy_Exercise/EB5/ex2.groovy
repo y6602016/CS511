@@ -13,7 +13,6 @@ Semaphore lots = new Semaphore(N)
 Semaphore mutex = new Semaphore(1)
 Semaphore mutexCats = new Semaphore(1)
 Semaphore mutexDogs = new Semaphore(1)
-Semaphore area = new Semaphore(1)
 animals = [0, 0] // [cat, dog]
 
 20.times { //Cat
@@ -22,7 +21,7 @@ animals = [0, 0] // [cat, dog]
     mutex.acquire()
     mutexCats.acquire()
     if (animals[0] == 0){ // who comes first, who acquires
-      area.acquire()
+      mutexDogs.acquire()
     }
     animals[0]++
     mutexCats.release()
@@ -39,7 +38,7 @@ animals = [0, 0] // [cat, dog]
     mutexCats.acquire()
     animals[0]--
     if (animals[0] == 0) {
-      area.release()
+      mutexDogs.release()
     }
     mutexCats.release()
   }
@@ -51,7 +50,7 @@ animals = [0, 0] // [cat, dog]
     mutex.acquire()
     mutexDogs.acquire()
     if (animals[1] == 0) {
-      area.acquire()
+      mutexCats.acquire()
     }
     animals[1]++
     mutexDogs.release()
@@ -68,7 +67,7 @@ animals = [0, 0] // [cat, dog]
     mutexDogs.acquire()
     animals[1]--
     if (animals[1] == 0) {
-      area.release()
+      mutexCats.release()
     }
     mutexDogs.release()
   }

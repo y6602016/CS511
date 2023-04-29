@@ -17,12 +17,12 @@ reached(B) ->
 % M is the number of processes YET to arrive at the barrier
 % L is a list of the PIDs of the processes that have already arrived at the barrier
 
-coordinator(N, 0, L) ->
-    %%% everyone reach to the barrier
+coordinator(0, N, L) ->
     [Pid ! {ok} || Pid <- L],
-    coordinator(N, N, []);
-coordinator(N, M, L) when M > 0 ->
+    coordinator(N, N, L);
+coordinator(M, N, L) ->
     receive
         {reached, From} ->
-            coordinator(N, M - 1, [From | L])
+            From ! {ok},
+            coordinator(M - 1, N, L ++ From)
     end.

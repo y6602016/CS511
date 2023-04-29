@@ -1,8 +1,7 @@
 -module(server).
-
 -export([start_server/0]).
-
 -include_lib("./defs.hrl").
+-author("Qi-Rui Hong").
 
 -spec start_server() -> _.
 -spec loop(_State) -> _.
@@ -134,7 +133,7 @@ do_new_nick(State, Ref, ClientPID, NewNick) ->
                         % if this chatroom contains the client, send message to the chatroom
                         true ->
                             ChatRoomPID = maps:get(ChatName, State#serv_st.chatrooms),
-                            ChatRoomPID ! {self(), Ref, updatenick, ClientPID, NewNick};
+                            ChatRoomPID ! {self(), Ref, update_nick, ClientPID, NewNick};
                         false ->
                             ok
                     end
@@ -147,5 +146,39 @@ do_new_nick(State, Ref, ClientPID, NewNick) ->
 
 %% executes client quit protocol from server perspective
 do_client_quit(State, Ref, ClientPID) ->
-    io:format("server:do_client_quit(...): IMPLEMENT ME~n"),
-    State.
+    % remove client from nicknames
+    NewNicks = maps:remove(ClientPID, State#serv_st.nicks),
+
+    % tell each chatroom to which the client is registered that the client is leaving
+    maps:foreach(
+        fun(ChatName, ClientPids) ->
+            case lists:member(ClientPID, ClientPids) of
+                % if this chatroom contains the client, send message to the chatroom
+                true ->
+                    ChatRoomPID = maps:get(ChatName, State#serv_st.chatrooms),
+                    ChatRoomPID ! {self(), Ref, unregister, ClientPID};
+                false ->
+                    ok
+            end
+        end,
+        State#serv_st.registrations
+    ),
+
+    % remove client from the server’s copy of all chat registrations
+    NewRegistrations = maps:map(
+        fun(_ChatName, ClientPids) ->
+            case lists:member(ClientPID, ClientPids) of
+                % if this chatroom contains the client, remove the clientPID from the PID list
+                true ->
+                    ClientPids -- [ClientPID];
+                false ->
+                    ClientPids
+            end
+        end,
+        State#serv_st.registrations
+    ),
+
+    % The server must then send the message to the client
+    ClientPID ! {self(), Ref, ack_quit},
+    NewState = State#serv_st{nicks = NewNicks, registrations = NewRegistrations},
+    NewState.

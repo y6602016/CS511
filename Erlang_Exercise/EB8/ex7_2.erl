@@ -46,5 +46,6 @@ server(Patriots, false) ->
             server(Patriots - 2, false);
         {From, R, late} ->
             io:fwrite("late~n"),
+            From ! {self(), R, ok},
             server(Patriots, true)
     end.

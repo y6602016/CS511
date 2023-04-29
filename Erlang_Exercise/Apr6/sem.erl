@@ -7,8 +7,7 @@ make_sem(N) ->
 
 sem_loop(0) ->
     receive
-        {release} ->
-            sem_loop(1)
+        {release} -> sem_loop(1)
     end;
 sem_loop(N) when N > 0 ->
     receive

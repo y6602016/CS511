@@ -2,7 +2,7 @@
 #define PAN_H
 
 #define SpinVersion	"Spin Version 6.5.2 -- 6 December 2019"
-#define PanSource	"attempt4.pml"
+#define PanSource	"zoo.pml"
 
 #define G_long	8
 #define G_int	4
@@ -132,15 +132,15 @@ typedef struct S_F_MAP {
 	int upto;
 } S_F_MAP;
 
-#define _nstates1	15	/* Q */
-#define minseq1	14
-#define maxseq1	27
-#define _endstate1	14
+#define _nstates1	41	/* Feline */
+#define minseq1	40
+#define maxseq1	79
+#define _endstate1	40
 
-#define _nstates0	15	/* P */
+#define _nstates0	41	/* Mouse */
 #define minseq0	0
-#define maxseq0	13
-#define _endstate0	14
+#define maxseq0	39
+#define _endstate0	40
 
 extern short src_ln1[];
 extern short src_ln0[];
@@ -148,8 +148,8 @@ extern S_F_MAP src_file1[];
 extern S_F_MAP src_file0[];
 
 #define T_ID	unsigned char
-#define _T5	15
-#define _T2	16
+#define _T5	35
+#define _T2	36
 #define WS		8 /* word size in bytes */
 #define SYNC	0
 #define ASYNC	0
@@ -164,37 +164,37 @@ extern S_F_MAP src_file0[];
 	#endif
 #endif
 
-#define PQ	((P1 *)_this)
-typedef struct P1 { /* Q */
+#define PFeline	((P1 *)_this)
+typedef struct P1 { /* Feline */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 3; /* proctype */
-	unsigned _p   : 5; /* state    */
+	unsigned _p   : 7; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
 } P1;
-#define Air1	(sizeof(P1) - 2)
+#define Air1	(sizeof(P1) - 3)
 
-#define PP	((P0 *)_this)
-typedef struct P0 { /* P */
+#define PMouse	((P0 *)_this)
+typedef struct P0 { /* Mouse */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 3; /* proctype */
-	unsigned _p   : 5; /* state    */
+	unsigned _p   : 7; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
 } P0;
-#define Air0	(sizeof(P0) - 2)
+#define Air0	(sizeof(P0) - 3)
 
 typedef struct P2 { /* np_ */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 3; /* proctype */
-	unsigned _p   : 5; /* state    */
+	unsigned _p   : 7; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
 } P2;
-#define Air2	(sizeof(P2) - 2)
+#define Air2	(sizeof(P2) - 3)
 
 #define Pclaim	P0
 #ifndef NCLAIMS
@@ -386,8 +386,13 @@ typedef struct State {
 		unsigned short _event;
 	#endif
 #endif
-	unsigned wantP : 1;
-	unsigned wantQ : 1;
+	uchar mice;
+	uchar felines;
+	uchar mutexMice;
+	uchar mutexFelines;
+	uchar feedinglot;
+	uchar c;
+	uchar area;
 #ifdef TRIX
 	/* room for 512 proc+chan ptrs, + safety margin */
 	char *_ids_[MAXPROC+MAXQ+4];
@@ -409,7 +414,7 @@ typedef struct TRIX_v6 {
 #endif
 
 #define HAS_TRACK	0
-/* hidden variable: */	uchar critical;
+/* hidden variable: */	uchar mutex;
 #define FORWARD_MOVES	"pan.m"
 #define BACKWARD_MOVES	"pan.b"
 #define TRANSITIONS	"pan.t"
@@ -418,8 +423,8 @@ typedef struct TRIX_v6 {
 #define _endstate2	2 /* np_ */
 
 #define _start2	0 /* np_ */
-#define _start1	11
-#define _start0	11
+#define _start1	4
+#define _start0	4
 #ifdef NP
 	#define ACCEPT_LAB	1 /* at least 1 in np_ */
 #else
@@ -451,7 +456,7 @@ typedef struct TRIX_v6 {
 #if NCORE>1 && !defined(MEMLIM)
 	#define MEMLIM	(2048)	/* need a default, using 2 GB */
 #endif
-#define PROG_LAB	2 /* progress labels */
+#define PROG_LAB	0 /* progress labels */
 #define NQS	0
 typedef struct Q0 {	/* generic q */
 	uchar Qlen;	/* q_size */
@@ -779,7 +784,7 @@ void qsend(int, int, int);
 #define GLOBAL	7
 #define BAD	8
 #define ALPHA_F	9
-#define NTRANS	17
+#define NTRANS	37
 #if defined(BFS_PAR) || NCORE>1
 	void e_critical(int);
 	void x_critical(int);

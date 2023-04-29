@@ -24,49 +24,135 @@ settable(void)
 
 	trans = (Trans ***) emalloc(3*sizeof(Trans **));
 
-	/* proctype 1: Q */
+	/* proctype 1: Feline */
 
-	trans[1] = (Trans **) emalloc(15*sizeof(Trans *));
+	trans[1] = (Trans **) emalloc(41*sizeof(Trans *));
 
-	trans[1][12]	= settr(25,0,11,1,0,".(goto)", 0, 2, 0);
-	T = trans[1][11] = settr(24,0,0,0,0,"DO", 0, 2, 0);
-	    T->nxt	= settr(24,0,1,0,0,"DO", 0, 2, 0);
-	trans[1][1]	= settr(14,0,7,3,3,"wantQ = 1", 1, 2, 0);
-	trans[1][8]	= settr(21,0,7,1,0,".(goto)", 0, 2, 0);
-	T = trans[1][7] = settr(20,0,0,0,0,"DO", 0, 2, 0);
-	T = T->nxt	= settr(20,0,2,0,0,"DO", 0, 2, 0);
-	    T->nxt	= settr(20,0,5,0,0,"DO", 0, 2, 0);
-	trans[1][2]	= settr(15,0,3,4,0,"(wantP)", 1, 2, 0);
-	trans[1][3]	= settr(16,0,4,5,5,"wantQ = 0", 1, 2, 0);
-	trans[1][4]	= settr(17,0,7,6,6,"wantQ = 1", 1, 2, 0);
-	trans[1][5]	= settr(18,0,10,2,0,"else", 0, 2, 0);
-	trans[1][6]	= settr(19,0,10,1,0,"goto :b3", 0, 2, 0);
-	trans[1][9]	= settr(22,0,10,1,0,"break", 0, 2, 0);
-	trans[1][10]	= settr(23,0,11,7,7,"wantQ = 0", 1, 2, 0);
-	trans[1][13]	= settr(26,0,14,1,0,"break", 0, 2, 0);
-	trans[1][14]	= settr(27,0,0,8,8,"-end-", 0, 3500, 0);
+	T = trans[ 1][4] = settr(43,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(43,0,3,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 1][3] = settr(42,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(42,2,1,0,0,"ATOMIC", 1, 2, 0);
+	trans[1][1]	= settr(40,4,5,3,3,"((mutexFelines>0))", 1, 2, 0); /* m: 2 -> 5,0 */
+	reached1[2] = 1;
+	trans[1][2]	= settr(0,0,0,0,0,"mutexFelines = (mutexFelines-1)",0,0,0);
+	trans[1][5]	= settr(44,0,13,4,4,"felines = (felines+1)", 1, 2, 0);
+	T = trans[1][13] = settr(52,0,0,0,0,"IF", 0, 2, 0);
+	T = T->nxt	= settr(52,0,6,0,0,"IF", 0, 2, 0);
+	    T->nxt	= settr(52,0,11,0,0,"IF", 0, 2, 0);
+	trans[1][6]	= settr(45,0,10,5,0,"((felines==1))", 1, 2, 0);
+	T = trans[ 1][10] = settr(49,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(49,0,9,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 1][9] = settr(48,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(48,2,7,0,0,"ATOMIC", 1, 2, 0);
+	trans[1][7]	= settr(46,0,16,6,6,"((area>0))", 1, 2, 0); /* m: 8 -> 16,0 */
+	reached1[8] = 1;
+	trans[1][8]	= settr(0,0,0,0,0,"area = (area-1)",0,0,0);
+	trans[1][14]	= settr(53,0,16,1,0,".(goto)", 0, 2, 0);
+	trans[1][11]	= settr(50,0,12,2,0,"else", 0, 2, 0);
+	trans[1][12]	= settr(51,0,16,1,0,"(1)", 0, 2, 0);
+	T = trans[ 1][16] = settr(55,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(55,0,15,0,0,"sub-sequence", 0, 2, 0);
+	trans[1][15]	= settr(54,0,20,7,7,"mutexFelines = (mutexFelines+1)", 1, 2, 0);
+	T = trans[ 1][20] = settr(59,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(59,0,19,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 1][19] = settr(58,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(58,2,17,0,0,"ATOMIC", 1, 2, 0);
+	trans[1][17]	= settr(56,4,21,8,8,"((feedinglot>0))", 1, 2, 0); /* m: 18 -> 21,0 */
+	reached1[18] = 1;
+	trans[1][18]	= settr(0,0,0,0,0,"feedinglot = (feedinglot-1)",0,0,0);
+	trans[1][21]	= settr(60,0,22,9,9,"c = (c+1)", 1, 2, 0);
+	trans[1][22]	= settr(61,0,23,10,0,"assert((c<3))", 1, 2, 0);
+	trans[1][23]	= settr(62,0,25,11,11,"c = (c-1)", 1, 2, 0);
+	T = trans[ 1][25] = settr(64,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(64,0,24,0,0,"sub-sequence", 0, 2, 0);
+	trans[1][24]	= settr(63,0,29,12,12,"feedinglot = (feedinglot+1)", 1, 2, 0);
+	T = trans[ 1][29] = settr(68,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(68,0,28,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 1][28] = settr(67,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(67,2,26,0,0,"ATOMIC", 1, 2, 0);
+	trans[1][26]	= settr(65,4,30,13,13,"((mutexFelines>0))", 1, 2, 0); /* m: 27 -> 30,0 */
+	reached1[27] = 1;
+	trans[1][27]	= settr(0,0,0,0,0,"mutexFelines = (mutexFelines-1)",0,0,0);
+	trans[1][30]	= settr(69,0,36,14,14,"felines = (felines-1)", 1, 2, 0);
+	T = trans[1][36] = settr(75,0,0,0,0,"IF", 0, 2, 0);
+	T = T->nxt	= settr(75,0,31,0,0,"IF", 0, 2, 0);
+	    T->nxt	= settr(75,0,34,0,0,"IF", 0, 2, 0);
+	trans[1][31]	= settr(70,0,33,15,0,"((felines==0))", 1, 2, 0);
+	T = trans[ 1][33] = settr(72,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(72,0,32,0,0,"sub-sequence", 0, 2, 0);
+	trans[1][32]	= settr(71,0,39,16,16,"area = (area+1)", 1, 2, 0);
+	trans[1][37]	= settr(76,0,39,1,0,".(goto)", 0, 2, 0);
+	trans[1][34]	= settr(73,0,35,2,0,"else", 0, 2, 0);
+	trans[1][35]	= settr(74,0,39,1,0,"(1)", 0, 2, 0);
+	T = trans[ 1][39] = settr(78,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(78,0,38,0,0,"sub-sequence", 0, 2, 0);
+	trans[1][38]	= settr(77,0,40,17,17,"mutexFelines = (mutexFelines+1)", 1, 2, 0);
+	trans[1][40]	= settr(79,0,0,18,18,"-end-", 0, 3500, 0);
 
-	/* proctype 0: P */
+	/* proctype 0: Mouse */
 
-	trans[0] = (Trans **) emalloc(15*sizeof(Trans *));
+	trans[0] = (Trans **) emalloc(41*sizeof(Trans *));
 
-	trans[0][12]	= settr(11,0,11,1,0,".(goto)", 0, 2, 0);
-	T = trans[0][11] = settr(10,0,0,0,0,"DO", 0, 2, 0);
-	    T->nxt	= settr(10,0,1,0,0,"DO", 0, 2, 0);
-	trans[0][1]	= settr(0,0,7,9,9,"wantP = 1", 1, 2, 0);
-	trans[0][8]	= settr(7,0,7,1,0,".(goto)", 0, 2, 0);
-	T = trans[0][7] = settr(6,0,0,0,0,"DO", 0, 2, 0);
-	T = T->nxt	= settr(6,0,2,0,0,"DO", 0, 2, 0);
-	    T->nxt	= settr(6,0,5,0,0,"DO", 0, 2, 0);
-	trans[0][2]	= settr(1,0,3,10,0,"(wantQ)", 1, 2, 0);
-	trans[0][3]	= settr(2,0,4,11,11,"wantP = 0", 1, 2, 0);
-	trans[0][4]	= settr(3,0,7,12,12,"wantP = 1", 1, 2, 0);
-	trans[0][5]	= settr(4,0,10,2,0,"else", 0, 2, 0);
-	trans[0][6]	= settr(5,0,10,1,0,"goto :b1", 0, 2, 0);
-	trans[0][9]	= settr(8,0,10,1,0,"break", 0, 2, 0);
-	trans[0][10]	= settr(9,0,11,13,13,"wantP = 0", 1, 2, 0);
-	trans[0][13]	= settr(12,0,14,1,0,"break", 0, 2, 0);
-	trans[0][14]	= settr(13,0,0,14,14,"-end-", 0, 3500, 0);
+	T = trans[ 0][4] = settr(3,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(3,0,3,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 0][3] = settr(2,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(2,2,1,0,0,"ATOMIC", 1, 2, 0);
+	trans[0][1]	= settr(0,4,5,19,19,"((mutexMice>0))", 1, 2, 0); /* m: 2 -> 5,0 */
+	reached0[2] = 1;
+	trans[0][2]	= settr(0,0,0,0,0,"mutexMice = (mutexMice-1)",0,0,0);
+	trans[0][5]	= settr(4,0,13,20,20,"mice = (mice+1)", 1, 2, 0);
+	T = trans[0][13] = settr(12,0,0,0,0,"IF", 0, 2, 0);
+	T = T->nxt	= settr(12,0,6,0,0,"IF", 0, 2, 0);
+	    T->nxt	= settr(12,0,11,0,0,"IF", 0, 2, 0);
+	trans[0][6]	= settr(5,0,10,21,0,"((mice==1))", 1, 2, 0);
+	T = trans[ 0][10] = settr(9,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(9,0,9,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 0][9] = settr(8,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(8,2,7,0,0,"ATOMIC", 1, 2, 0);
+	trans[0][7]	= settr(6,0,16,22,22,"((area>0))", 1, 2, 0); /* m: 8 -> 16,0 */
+	reached0[8] = 1;
+	trans[0][8]	= settr(0,0,0,0,0,"area = (area-1)",0,0,0);
+	trans[0][14]	= settr(13,0,16,1,0,".(goto)", 0, 2, 0);
+	trans[0][11]	= settr(10,0,12,2,0,"else", 0, 2, 0);
+	trans[0][12]	= settr(11,0,16,1,0,"(1)", 0, 2, 0);
+	T = trans[ 0][16] = settr(15,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(15,0,15,0,0,"sub-sequence", 0, 2, 0);
+	trans[0][15]	= settr(14,0,20,23,23,"mutexMice = (mutexMice+1)", 1, 2, 0);
+	T = trans[ 0][20] = settr(19,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(19,0,19,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 0][19] = settr(18,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(18,2,17,0,0,"ATOMIC", 1, 2, 0);
+	trans[0][17]	= settr(16,4,21,24,24,"((feedinglot>0))", 1, 2, 0); /* m: 18 -> 21,0 */
+	reached0[18] = 1;
+	trans[0][18]	= settr(0,0,0,0,0,"feedinglot = (feedinglot-1)",0,0,0);
+	trans[0][21]	= settr(20,0,22,25,25,"c = (c+1)", 1, 2, 0);
+	trans[0][22]	= settr(21,0,23,26,0,"assert((c<3))", 1, 2, 0);
+	trans[0][23]	= settr(22,0,25,27,27,"c = (c-1)", 1, 2, 0);
+	T = trans[ 0][25] = settr(24,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(24,0,24,0,0,"sub-sequence", 0, 2, 0);
+	trans[0][24]	= settr(23,0,29,28,28,"feedinglot = (feedinglot+1)", 1, 2, 0);
+	T = trans[ 0][29] = settr(28,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(28,0,28,0,0,"sub-sequence", 0, 2, 0);
+	T = trans[ 0][28] = settr(27,2,0,0,0,"ATOMIC", 1, 2, 0);
+	T->nxt	= settr(27,2,26,0,0,"ATOMIC", 1, 2, 0);
+	trans[0][26]	= settr(25,4,30,29,29,"((mutexMice>0))", 1, 2, 0); /* m: 27 -> 30,0 */
+	reached0[27] = 1;
+	trans[0][27]	= settr(0,0,0,0,0,"mutexMice = (mutexMice-1)",0,0,0);
+	trans[0][30]	= settr(29,0,36,30,30,"mice = (mice-1)", 1, 2, 0);
+	T = trans[0][36] = settr(35,0,0,0,0,"IF", 0, 2, 0);
+	T = T->nxt	= settr(35,0,31,0,0,"IF", 0, 2, 0);
+	    T->nxt	= settr(35,0,34,0,0,"IF", 0, 2, 0);
+	trans[0][31]	= settr(30,0,33,31,0,"((mice==0))", 1, 2, 0);
+	T = trans[ 0][33] = settr(32,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(32,0,32,0,0,"sub-sequence", 0, 2, 0);
+	trans[0][32]	= settr(31,0,39,32,32,"area = (area+1)", 1, 2, 0);
+	trans[0][37]	= settr(36,0,39,1,0,".(goto)", 0, 2, 0);
+	trans[0][34]	= settr(33,0,35,2,0,"else", 0, 2, 0);
+	trans[0][35]	= settr(34,0,39,1,0,"(1)", 0, 2, 0);
+	T = trans[ 0][39] = settr(38,0,0,0,0,"sub-sequence", 0, 2, 0);
+	T->nxt	= settr(38,0,38,0,0,"sub-sequence", 0, 2, 0);
+	trans[0][38]	= settr(37,0,40,33,33,"mutexMice = (mutexMice+1)", 1, 2, 0);
+	trans[0][40]	= settr(39,0,0,34,34,"-end-", 0, 3500, 0);
 	/* np_ demon: */
 	trans[_NP_] = (Trans **) emalloc(3*sizeof(Trans *));
 	T = trans[_NP_][0] = settr(9997,0,1,_T5,0,"(np_)", 1,2,0);

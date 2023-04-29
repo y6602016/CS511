@@ -19,109 +19,329 @@
 		if (trpt->o_pm&1) continue;
 		_m = 3; goto P999;
 
-		 /* PROC Q */
-	case 3: // STATE 1 - attempt4.pml:22 - [wantQ = 1] (0:0:1 - 1)
+		 /* PROC Feline */
+	case 3: // STATE 1 - zoo.pml:12 - [((mutexFelines>0))] (5:0:1 - 1)
 		IfNotBlocked
 		reached[1][1] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantQ);
-		now.wantQ = 1;
+		if (!((((int)now.mutexFelines)>0)))
+			continue;
+		/* merge: mutexFelines = (mutexFelines-1)(0, 2, 5) */
+		reached[1][2] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexFelines);
+		now.mutexFelines = (((int)now.mutexFelines)-1);
 #ifdef VAR_RANGES
-		logval("wantQ", ((int)now.wantQ));
+		logval("mutexFelines", ((int)now.mutexFelines));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 4: // STATE 5 - zoo.pml:49 - [felines = (felines+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][5] = 1;
+		(trpt+1)->bup.oval = ((int)now.felines);
+		now.felines = (((int)now.felines)+1);
+#ifdef VAR_RANGES
+		logval("felines", ((int)now.felines));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 4: // STATE 2 - attempt4.pml:24 - [(wantP)] (0:0:0 - 1)
+	case 5: // STATE 6 - zoo.pml:51 - [((felines==1))] (0:0:0 - 1)
 		IfNotBlocked
-		reached[1][2] = 1;
-		if (!(((int)now.wantP)))
+		reached[1][6] = 1;
+		if (!((((int)now.felines)==1)))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 5: // STATE 3 - attempt4.pml:24 - [wantQ = 0] (0:0:1 - 1)
+	case 6: // STATE 7 - zoo.pml:12 - [((area>0))] (16:0:1 - 1)
 		IfNotBlocked
-		reached[1][3] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantQ);
-		now.wantQ = 0;
+		reached[1][7] = 1;
+		if (!((((int)now.area)>0)))
+			continue;
+		/* merge: area = (area-1)(0, 8, 16) */
+		reached[1][8] = 1;
+		(trpt+1)->bup.oval = ((int)now.area);
+		now.area = (((int)now.area)-1);
 #ifdef VAR_RANGES
-		logval("wantQ", ((int)now.wantQ));
+		logval("area", ((int)now.area));
 #endif
 		;
-		_m = 3; goto P999; /* 0 */
-	case 6: // STATE 4 - attempt4.pml:24 - [wantQ = 1] (0:0:1 - 1)
-		IfNotBlocked
-		reached[1][4] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantQ);
-		now.wantQ = 1;
-#ifdef VAR_RANGES
-		logval("wantQ", ((int)now.wantQ));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 7: // STATE 10 - attempt4.pml:31 - [wantQ = 0] (0:0:1 - 3)
-		IfNotBlocked
-		reached[1][10] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantQ);
-		now.wantQ = 0;
-#ifdef VAR_RANGES
-		logval("wantQ", ((int)now.wantQ));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 8: // STATE 14 - attempt4.pml:33 - [-end-] (0:0:0 - 1)
-		IfNotBlocked
+		/* merge: .(goto)(0, 14, 16) */
 		reached[1][14] = 1;
+		;
+		_m = 3; goto P999; /* 2 */
+	case 7: // STATE 15 - zoo.pml:17 - [mutexFelines = (mutexFelines+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][15] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexFelines);
+		now.mutexFelines = (((int)now.mutexFelines)+1);
+#ifdef VAR_RANGES
+		logval("mutexFelines", ((int)now.mutexFelines));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 8: // STATE 17 - zoo.pml:12 - [((feedinglot>0))] (21:0:1 - 1)
+		IfNotBlocked
+		reached[1][17] = 1;
+		if (!((((int)now.feedinglot)>0)))
+			continue;
+		/* merge: feedinglot = (feedinglot-1)(0, 18, 21) */
+		reached[1][18] = 1;
+		(trpt+1)->bup.oval = ((int)now.feedinglot);
+		now.feedinglot = (((int)now.feedinglot)-1);
+#ifdef VAR_RANGES
+		logval("feedinglot", ((int)now.feedinglot));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 9: // STATE 21 - zoo.pml:58 - [c = (c+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][21] = 1;
+		(trpt+1)->bup.oval = ((int)now.c);
+		now.c = (((int)now.c)+1);
+#ifdef VAR_RANGES
+		logval("c", ((int)now.c));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 10: // STATE 22 - zoo.pml:59 - [assert((c<3))] (0:0:0 - 1)
+		IfNotBlocked
+		reached[1][22] = 1;
+		spin_assert((((int)now.c)<3), "(c<3)", II, tt, t);
+		_m = 3; goto P999; /* 0 */
+	case 11: // STATE 23 - zoo.pml:60 - [c = (c-1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][23] = 1;
+		(trpt+1)->bup.oval = ((int)now.c);
+		now.c = (((int)now.c)-1);
+#ifdef VAR_RANGES
+		logval("c", ((int)now.c));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 12: // STATE 24 - zoo.pml:17 - [feedinglot = (feedinglot+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][24] = 1;
+		(trpt+1)->bup.oval = ((int)now.feedinglot);
+		now.feedinglot = (((int)now.feedinglot)+1);
+#ifdef VAR_RANGES
+		logval("feedinglot", ((int)now.feedinglot));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 13: // STATE 26 - zoo.pml:12 - [((mutexFelines>0))] (30:0:1 - 1)
+		IfNotBlocked
+		reached[1][26] = 1;
+		if (!((((int)now.mutexFelines)>0)))
+			continue;
+		/* merge: mutexFelines = (mutexFelines-1)(0, 27, 30) */
+		reached[1][27] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexFelines);
+		now.mutexFelines = (((int)now.mutexFelines)-1);
+#ifdef VAR_RANGES
+		logval("mutexFelines", ((int)now.mutexFelines));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 14: // STATE 30 - zoo.pml:64 - [felines = (felines-1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][30] = 1;
+		(trpt+1)->bup.oval = ((int)now.felines);
+		now.felines = (((int)now.felines)-1);
+#ifdef VAR_RANGES
+		logval("felines", ((int)now.felines));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 15: // STATE 31 - zoo.pml:66 - [((felines==0))] (0:0:0 - 1)
+		IfNotBlocked
+		reached[1][31] = 1;
+		if (!((((int)now.felines)==0)))
+			continue;
+		_m = 3; goto P999; /* 0 */
+	case 16: // STATE 32 - zoo.pml:17 - [area = (area+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][32] = 1;
+		(trpt+1)->bup.oval = ((int)now.area);
+		now.area = (((int)now.area)+1);
+#ifdef VAR_RANGES
+		logval("area", ((int)now.area));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 17: // STATE 38 - zoo.pml:17 - [mutexFelines = (mutexFelines+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][38] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexFelines);
+		now.mutexFelines = (((int)now.mutexFelines)+1);
+#ifdef VAR_RANGES
+		logval("mutexFelines", ((int)now.mutexFelines));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 18: // STATE 40 - zoo.pml:70 - [-end-] (0:0:0 - 1)
+		IfNotBlocked
+		reached[1][40] = 1;
 		if (!delproc(1, II)) continue;
 		_m = 3; goto P999; /* 0 */
 
-		 /* PROC P */
-	case 9: // STATE 1 - attempt4.pml:7 - [wantP = 1] (0:0:1 - 1)
+		 /* PROC Mouse */
+	case 19: // STATE 1 - zoo.pml:12 - [((mutexMice>0))] (5:0:1 - 1)
 		IfNotBlocked
 		reached[0][1] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantP);
-		now.wantP = 1;
+		if (!((((int)now.mutexMice)>0)))
+			continue;
+		/* merge: mutexMice = (mutexMice-1)(0, 2, 5) */
+		reached[0][2] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexMice);
+		now.mutexMice = (((int)now.mutexMice)-1);
 #ifdef VAR_RANGES
-		logval("wantP", ((int)now.wantP));
+		logval("mutexMice", ((int)now.mutexMice));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 20: // STATE 5 - zoo.pml:23 - [mice = (mice+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][5] = 1;
+		(trpt+1)->bup.oval = ((int)now.mice);
+		now.mice = (((int)now.mice)+1);
+#ifdef VAR_RANGES
+		logval("mice", ((int)now.mice));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 10: // STATE 2 - attempt4.pml:9 - [(wantQ)] (0:0:0 - 1)
+	case 21: // STATE 6 - zoo.pml:25 - [((mice==1))] (0:0:0 - 1)
 		IfNotBlocked
-		reached[0][2] = 1;
-		if (!(((int)now.wantQ)))
+		reached[0][6] = 1;
+		if (!((((int)now.mice)==1)))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 11: // STATE 3 - attempt4.pml:9 - [wantP = 0] (0:0:1 - 1)
+	case 22: // STATE 7 - zoo.pml:12 - [((area>0))] (16:0:1 - 1)
 		IfNotBlocked
-		reached[0][3] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantP);
-		now.wantP = 0;
+		reached[0][7] = 1;
+		if (!((((int)now.area)>0)))
+			continue;
+		/* merge: area = (area-1)(0, 8, 16) */
+		reached[0][8] = 1;
+		(trpt+1)->bup.oval = ((int)now.area);
+		now.area = (((int)now.area)-1);
 #ifdef VAR_RANGES
-		logval("wantP", ((int)now.wantP));
+		logval("area", ((int)now.area));
 #endif
 		;
-		_m = 3; goto P999; /* 0 */
-	case 12: // STATE 4 - attempt4.pml:9 - [wantP = 1] (0:0:1 - 1)
-		IfNotBlocked
-		reached[0][4] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantP);
-		now.wantP = 1;
-#ifdef VAR_RANGES
-		logval("wantP", ((int)now.wantP));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 13: // STATE 10 - attempt4.pml:16 - [wantP = 0] (0:0:1 - 3)
-		IfNotBlocked
-		reached[0][10] = 1;
-		(trpt+1)->bup.oval = ((int)now.wantP);
-		now.wantP = 0;
-#ifdef VAR_RANGES
-		logval("wantP", ((int)now.wantP));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 14: // STATE 14 - attempt4.pml:18 - [-end-] (0:0:0 - 1)
-		IfNotBlocked
+		/* merge: .(goto)(0, 14, 16) */
 		reached[0][14] = 1;
+		;
+		_m = 3; goto P999; /* 2 */
+	case 23: // STATE 15 - zoo.pml:17 - [mutexMice = (mutexMice+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][15] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexMice);
+		now.mutexMice = (((int)now.mutexMice)+1);
+#ifdef VAR_RANGES
+		logval("mutexMice", ((int)now.mutexMice));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 24: // STATE 17 - zoo.pml:12 - [((feedinglot>0))] (21:0:1 - 1)
+		IfNotBlocked
+		reached[0][17] = 1;
+		if (!((((int)now.feedinglot)>0)))
+			continue;
+		/* merge: feedinglot = (feedinglot-1)(0, 18, 21) */
+		reached[0][18] = 1;
+		(trpt+1)->bup.oval = ((int)now.feedinglot);
+		now.feedinglot = (((int)now.feedinglot)-1);
+#ifdef VAR_RANGES
+		logval("feedinglot", ((int)now.feedinglot));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 25: // STATE 21 - zoo.pml:32 - [c = (c+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][21] = 1;
+		(trpt+1)->bup.oval = ((int)now.c);
+		now.c = (((int)now.c)+1);
+#ifdef VAR_RANGES
+		logval("c", ((int)now.c));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 26: // STATE 22 - zoo.pml:33 - [assert((c<3))] (0:0:0 - 1)
+		IfNotBlocked
+		reached[0][22] = 1;
+		spin_assert((((int)now.c)<3), "(c<3)", II, tt, t);
+		_m = 3; goto P999; /* 0 */
+	case 27: // STATE 23 - zoo.pml:34 - [c = (c-1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][23] = 1;
+		(trpt+1)->bup.oval = ((int)now.c);
+		now.c = (((int)now.c)-1);
+#ifdef VAR_RANGES
+		logval("c", ((int)now.c));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 28: // STATE 24 - zoo.pml:17 - [feedinglot = (feedinglot+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][24] = 1;
+		(trpt+1)->bup.oval = ((int)now.feedinglot);
+		now.feedinglot = (((int)now.feedinglot)+1);
+#ifdef VAR_RANGES
+		logval("feedinglot", ((int)now.feedinglot));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 29: // STATE 26 - zoo.pml:12 - [((mutexMice>0))] (30:0:1 - 1)
+		IfNotBlocked
+		reached[0][26] = 1;
+		if (!((((int)now.mutexMice)>0)))
+			continue;
+		/* merge: mutexMice = (mutexMice-1)(0, 27, 30) */
+		reached[0][27] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexMice);
+		now.mutexMice = (((int)now.mutexMice)-1);
+#ifdef VAR_RANGES
+		logval("mutexMice", ((int)now.mutexMice));
+#endif
+		;
+		_m = 3; goto P999; /* 1 */
+	case 30: // STATE 30 - zoo.pml:38 - [mice = (mice-1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][30] = 1;
+		(trpt+1)->bup.oval = ((int)now.mice);
+		now.mice = (((int)now.mice)-1);
+#ifdef VAR_RANGES
+		logval("mice", ((int)now.mice));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 31: // STATE 31 - zoo.pml:40 - [((mice==0))] (0:0:0 - 1)
+		IfNotBlocked
+		reached[0][31] = 1;
+		if (!((((int)now.mice)==0)))
+			continue;
+		_m = 3; goto P999; /* 0 */
+	case 32: // STATE 32 - zoo.pml:17 - [area = (area+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][32] = 1;
+		(trpt+1)->bup.oval = ((int)now.area);
+		now.area = (((int)now.area)+1);
+#ifdef VAR_RANGES
+		logval("area", ((int)now.area));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 33: // STATE 38 - zoo.pml:17 - [mutexMice = (mutexMice+1)] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][38] = 1;
+		(trpt+1)->bup.oval = ((int)now.mutexMice);
+		now.mutexMice = (((int)now.mutexMice)+1);
+#ifdef VAR_RANGES
+		logval("mutexMice", ((int)now.mutexMice));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 34: // STATE 40 - zoo.pml:44 - [-end-] (0:0:0 - 1)
+		IfNotBlocked
+		reached[0][40] = 1;
 		if (!delproc(1, II)) continue;
 		_m = 3; goto P999; /* 0 */
 	case  _T5:	/* np_ */

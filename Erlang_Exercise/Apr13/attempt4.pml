@@ -12,7 +12,7 @@ active proctype P() {
     // critical ++;
     // assert(critical == 1);
     // critical --;
-progress1:
+// progress1:
     wantP = false;
   od
 }
@@ -27,7 +27,7 @@ active proctype Q() {
     // critical ++;
     // assert(critical == 1);
     // critical --;
-progress2:
+// progress2:
     wantQ = false;
   od
 }

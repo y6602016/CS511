@@ -39,6 +39,7 @@ stopConsume(RS) ->
 
 resource(Size, Capacity, SP, SC) ->
     receive
+        %% 還有空間可以produce
         {startProduce, From} when Size + SP < Capacity ->
             io:fwrite("~w is producing ~w ~w ~w ~w ~n", [From, Size, Capacity, SP + 1, SC]),
             From ! {ok},
@@ -46,6 +47,7 @@ resource(Size, Capacity, SP, SC) ->
         {stopProduce, From} ->
             io:fwrite("~w stops producing ~w ~w ~w ~w ~n", [From, Size + 1, Capacity, SP - 1, SC]),
             resource(Size + 1, Capacity, SP - 1, SC);
+        %% 還有資源可以consume
         {startConsume, From} when Size - SC > 0 ->
             io:fwrite("~w is consuming ~w ~w ~w ~w ~n", [From, Size, Capacity, SP, SC + 1]),
             From ! {ok},
